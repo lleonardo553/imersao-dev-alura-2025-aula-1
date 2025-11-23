@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Base de Conhecimento | Lleozinho</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- VARIÁVEIS E RESET --- */
+        :root {
+            --primary-color: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg-color: #f3f4f6;
+            --text-color: #1f2937;
+            --card-bg: #ffffff;
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+
+        body {
+            background-color: var(--bg-color);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            color: var(--text-color);
+            overflow-x: hidden; /* Evita barra lateral indesejada na animação */
+        }
+
+        /* --- ANIMAÇÕES GERAIS (Keyframes) --- */
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUpCard {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- CABEÇALHO --- */
+        header {
+            background: var(--card-bg);
+            padding: 50px 20px;
+            text-align: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            border-bottom: 1px solid #e5e7eb;
+            /* Animação de entrada do header */
+            animation: slideDown 0.8s ease-out;
+        }
+
+        header h1 {
+            color: #111827;
+            font-size: 2.2rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            margin-bottom: 35px;
+            text-transform: uppercase;
+        }
+
+        .search-wrapper {
+            position: relative;
+            max-width: 550px;
+            margin: 0 auto;
+            display: flex;
+            gap: 10px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 16px 24px;
+            border: 2px solid #e5e7eb;
+            border-radius: 50px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            outline: none;
+            background-color: #f9fafb;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--primary-color);
+            background-color: #fff;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+        }
+
+        button {
+            padding: 0 32px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
+        }
+
+        button:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(37, 99, 235, 0.3);
+        }
+
+        /* --- CONTEÚDO PRINCIPAL --- */
+        main {
+            flex: 1;
+            padding: 40px 20px;
+            max-width: 900px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .item-resultado {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 16px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow);
+            border-left: 6px solid var(--primary-color);
+            
+            /* Preparando para animação */
+            opacity: 0; 
+            animation: fadeInUpCard 0.6s ease-out forwards;
+            /* O delay é definido via JS para efeito cascata */
+        }
+
+        .item-resultado:hover {
+            transform: translateY(-5px); /* Sobe um pouquinho mais ao passar mouse */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .item-resultado h2 { margin-bottom: 12px; font-size: 1.5rem; }
+        .item-resultado h2 a { text-decoration: none; color: #111827; transition: color 0.2s; }
+        .item-resultado h2 a:hover { color: var(--primary-color); }
+        .item-resultado p { color: #4b5563; line-height: 1.7; margin-bottom: 20px; font-family: 'Roboto', sans-serif; }
+
+        .btn-leia-mais {
+            display: inline-block;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            padding: 8px 0;
+            position: relative;
+        }
+
+        .btn-leia-mais::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 5px;
+            left: 0;
+            background-color: var(--primary-color);
+            transition: width 0.3s;
+        }
+        .btn-leia-mais:hover::after { width: 100%; }
+
+        /* --- RODAPÉ --- */
+        footer {
+            background-color: #111827;
+            color: #9ca3af;
+            padding: 30px 20px;
+            font-size: 0.9rem;
+            /* Animação de entrada do footer */
+            animation: slideUp 0.8s ease-out;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .links { display: flex; gap: 25px; }
+        .links a { color: #d1d5db; text-decoration: none; transition: color 0.3s; font-weight: 500; cursor: pointer; }
+        .links a:hover { color: #fff; text-decoration: underline; }
+        .dev-info strong { color: #fff; }
+        .discord-link { color: #5865F2 !important; }
+        .discord-link:hover { color: #7289da !important; }
+
+        @media (min-width: 768px) {
+            .footer-content { flex-direction: row; justify-content: space-between; }
+        }
+
+        /* --- MODAL DE SAÍDA (POPUP) --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.6); /* Fundo escuro */
+            backdrop-filter: blur(5px); /* Efeito de desfoque */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s;
+        }
+
+        .modal-overlay.ativo {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-box {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            transform: scale(0.8);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .modal-overlay.ativo .modal-box {
+            transform: scale(1);
+        }
+
+        .modal-box h3 { margin-bottom: 15px; color: #1f2937; font-size: 1.3rem; }
+        .modal-box p { margin-bottom: 25px; color: #6b7280; }
+        
+        .modal-buttons { display: flex; gap: 10px; justify-content: center; }
+
+        .btn-modal {
+            padding: 10px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            border: none;
+            transition: background 0.2s;
+        }
+
+        .btn-nao { background: #e5e7eb; color: #374151; }
+        .btn-nao:hover { background: #d1d5db; }
+
+        .btn-sim { background: #ef4444; color: white; }
+        .btn-sim:hover { background: #dc2626; }
+
+        /* --- TOAST DE ERRO --- */
+        #toast-erro {
+            visibility: hidden; min-width: 250px; background-color: #ef4444; color: #fff;
+            text-align: center; border-radius: 50px; padding: 16px; position: fixed; z-index: 99;
+            left: 50%; bottom: 30px; transform: translateX(-50%); font-weight: 500; opacity: 0;
+            transition: opacity 0.5s, bottom 0.5s;
+        }
+        #toast-erro.mostrar { visibility: visible; opacity: 1; bottom: 50px; }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Base de Conhecimento</h1>
+        <div class="search-wrapper">
+            <input type="text" id="campo-pesquisa" placeholder="O que você quer aprender hoje? (Ex: Python, Web, JS)">
+            <button onclick="pesquisar()">Buscar</button>
+        </div>
+    </header>
+
+    <main>
+        <section id="resultados-pesquisa">
+            </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="dev-info">Desenvolvido por <strong>lleozinho</strong></div>
+            <div class="links">
+                <a href="https://discord.gg/6KQPTWh244" target="_blank" class="discord-link">Discord</a>
+                <a onclick="mostrarErro(event)">LinkedIn</a>
+                <a onclick="mostrarErro(event)">Sobre</a>
+            </div>
+        </div>
+    </footer>
+
+    <div id="toast-erro">Erro ao buscar servidor</div>
+
+    <div id="modal-sair" class="modal-overlay">
+        <div class="modal-box">
+            <h3 id="modal-titulo">Deseja sair do site?</h3>
+            <p id="modal-msg">Você perderá sua pesquisa atual.</p>
+            <div class="modal-buttons" id="modal-botoes">
+                <button class="btn-modal btn-sim" onclick="confirmarSaida()">Sim</button>
+                <button class="btn-modal btn-nao" onclick="fecharModal()">Não</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const dados = [
+            { titulo: "HTML 5", descricao: "A quinta versão da Linguagem de Marcação de Hipertexto. Estrutura básica da web.", link: "https://developer.mozilla.org/pt-BR/docs/Web/HTML" },
+            { titulo: "CSS 3", descricao: "Cascading Style Sheets. Estiliza o HTML, controlando cores e layout.", link: "https://developer.mozilla.org/pt-BR/docs/Web/CSS" },
+            { titulo: "JavaScript", descricao: "Linguagem que dá vida e interatividade à web.", link: "https://developer.mozilla.org/pt-BR/docs/Web/JavaScript" },
+            { titulo: "Python", descricao: "Linguagem simples e poderosa, usada em Dados e IA.", link: "https://www.python.org/" },
+            { titulo: "TypeScript", descricao: "JavaScript com superpoderes (tipagem).", link: "https://www.typescriptlang.org/" },
+            { titulo: "Java", descricao: "Robusta e segura. 'Escreva uma vez, rode em qualquer lugar'.", link: "https://www.java.com/pt-BR/" },
+            { titulo: "C# (C Sharp)", descricao: "Linguagem da Microsoft para Web, Windows e Jogos (Unity).", link: "https://learn.microsoft.com/pt-br/dotnet/csharp/" },
+            { titulo: "C++", descricao: "Alta performance para jogos e sistemas operacionais.", link: "https://cplusplus.com/" },
+            { titulo: "Go", descricao: "Criada pelo Google para alta performance e nuvem.", link: "https://go.dev/" },
+            { titulo: "PHP", descricao: "Linguagem de script para Backend web.", link: "https://www.php.net/" },
+            { titulo: "Lua", descricao: "Leve e brasileira, usada no Roblox.", link: "https://www.lua.org/" },
+            { titulo: "Node.js", descricao: "Roda JavaScript no servidor (Backend).", link: "https://nodejs.org/" },
+            { titulo: "MySQL", descricao: "Banco de dados SQL mais popular do mundo.", link: "https://www.mysql.com/" },
+            { titulo: "GCP", descricao: "Nuvem do Google (Cloud Platform).", link: "https://cloud.google.com/" }
+        ];
+
+        function pesquisar() {
+            let section = document.getElementById("resultados-pesquisa");
+            let campoPesquisa = document.getElementById("campo-pesquisa").value.toLowerCase();
+
+            if (!campoPesquisa) {
+                section.innerHTML = "<div style='text-align:center; color:#6b7280; animation: fadeInUpCard 0.5s;'>Comece digitando uma tecnologia...</div>";
+                return;
+            }
+
+            let resultadosHTML = "";
+            let delayContador = 0; // Contador para a animação em cascata
+
+            for (let dado of dados) {
+                if (dado.titulo.toLowerCase().includes(campoPesquisa) || dado.descricao.toLowerCase().includes(campoPesquisa)) {
+                    // Calcula o delay: 0.1s, 0.2s, 0.3s...
+                    let delay = delayContador * 0.1; 
+                    
+                    resultadosHTML += `
+                    <div class="item-resultado" style="animation-delay: ${delay}s">
+                        <h2><a href="${dado.link}" target="_blank">${dado.titulo}</a></h2>
+                        <p>${dado.descricao}</p>
+                        <a href="${dado.link}" target="_blank" class="btn-leia-mais">Documentação Oficial →</a>
+                    </div>`;
+                    
+                    delayContador++;
+                }
+            }
+
+            if (!resultadosHTML) {
+                section.innerHTML = "<div style='text-align:center; color:#6b7280; animation: fadeInUpCard 0.5s;'>Nenhum resultado encontrado.</div>";
+            } else {
+                section.innerHTML = resultadosHTML;
+            }
+        }
+
+        // --- LÓGICA DO ESCAPE E MODAL ---
+        const modal = document.getElementById("modal-sair");
+        const modalTitulo = document.getElementById("modal-titulo");
+        const modalMsg = document.getElementById("modal-msg");
+        const modalBotoes = document.getElementById("modal-botoes");
+
+        // Detectar tecla ESC
+        document.addEventListener('keydown', function(event) {
+            if (event.key === "Escape") {
+                abrirModal();
+            }
+        });
+
+        function abrirModal() {
+            modal.classList.add("ativo");
+        }
+
+        function fecharModal() {
+            modal.classList.remove("ativo");
+        }
+
+        function confirmarSaida() {
+            // Muda o conteúdo da modal para aviso de redirecionamento
+            modalTitulo.innerText = "Redirecionando...";
+            modalTitulo.style.color = "#2563eb"; // Fica azul
+            modalMsg.innerText = "Você está sendo redirecionado para o site da Alura.";
+            modalBotoes.style.display = "none"; // Esconde os botões
+
+            // Espera 2 segundos e redireciona
+            setTimeout(function() {
+                window.location.href = "https://www.alura.com.br/";
+            }, 2000);
+        }
+
+        // --- LÓGICA DO TOAST (ERRO) ---
+        function mostrarErro(event) {
+            if(event) event.preventDefault();
+            let toast = document.getElementById("toast-erro");
+            toast.className = "mostrar";
+            setTimeout(function(){ toast.className = toast.className.replace("mostrar", ""); }, 2000);
+        }
+
+        // Enter na busca
+        document.getElementById("campo-pesquisa").addEventListener("keypress", function(e) {
+            if (e.key === "Enter") { e.preventDefault(); pesquisar(); }
+        });
+    </script>
+</body>
+</html>
